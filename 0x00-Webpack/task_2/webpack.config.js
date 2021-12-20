@@ -15,11 +15,12 @@ module.exports = {
 	module: {
 		rules: [
 			{
-				test: /\.css$/i,
+				test: /\.css$/,
 				use: ['style-loader', 'css-loader'],
 			},
 			{
-				test: /\.(?:ico|gif|png|jpg|jpeg)$/i,
+				test: /\.(gif|svg|png|jpg|jpeg)$/i,
+				type: 'asset/resource',
 				use: [
 					{
 						loader: 'image-webpack-loader',
