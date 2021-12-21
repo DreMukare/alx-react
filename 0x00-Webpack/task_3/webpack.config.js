@@ -9,7 +9,7 @@ module.exports = {
 		}),
 		new CleanWebpackPlugin(),
 	],
-	devtool: 'inline-cheap-source-map',
+	devtool: 'inline-source-map',
 	mode: 'development',
 	entry: {
 		header: {
@@ -53,7 +53,7 @@ module.exports = {
 				test: /\.(?:ico|gif|png|jpg|jpeg)$/i,
 				use: [
 					{
-						loader: 'image-webpack-loader',
+						loader: ['file-loader', 'image-webpack-loader'],
 						options: {
 							bypassOnDebug: true,
 							disable: true,
