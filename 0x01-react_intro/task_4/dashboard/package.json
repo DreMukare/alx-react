@@ -1,5 +1,5 @@
 {
-	"homepage": "http://DreMukare.github.io/alx-react/task_4/dashboard",
+	"homepage": "https://DreMukare.github.io/alx-react",
 	"name": "dashboard",
 	"version": "0.1.0",
 	"private": true,
@@ -41,6 +41,7 @@
 	"devDependencies": {
 		"@wojtekmaj/enzyme-adapter-react-17": "^0.6.6",
 		"enzyme": "^3.11.0",
-		"enzyme-to-json": "^3.6.2"
+		"enzyme-to-json": "^3.6.2",
+		"gh-pages": "^3.2.3"
 	}
 }
