@@ -23,7 +23,7 @@ module.exports = {
 				type: 'asset/resource',
 				use: [
 					{
-						loader: 'image-webpack-loader',
+						loader: ['file-loader', 'image-webpack-loader'],
 						options: {
 							bypassOnDebug: true,
 							disable: true,
