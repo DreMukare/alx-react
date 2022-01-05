@@ -14,31 +14,30 @@ const Notifications = ({ displayDrawer, listNotifications }) => {
 						<p>Your notifications</p>
 					</div>
 					<div className='Notifications'>
-						<div className='notification-header'>
-							<p>Here is the list of notifications</p>
-							<button
-								aria-label='Close'
-								onClick={console.log('Close button has been clicked')}
-							>
-								<img
-									style={{ display: 'inline' }}
-									src={closeIcon}
-									alt='Close'
-								/>
-							</button>
-						</div>
 						<ul>
 							{listNotifications && listNotifications.length > 0 ? (
-								listNotifications.map(({ id, html, type, value }) => {
+								listNotifications.map(({ id, html, type, value }) => (
 									<NotificationItem
 										key={id}
-										html={html}
 										type={type}
 										value={value}
-									/>;
-								})
+										html={html}
+									/>
+								))
 							) : (
-								<NotificationItem value='No new notification for now' />
+								<div className='notification-header'>
+									<NotificationItem value='No new notification for now' />
+									<button
+										aria-label='Close'
+										onClick={console.log('Close button has been clicked')}
+									>
+										<img
+											style={{ display: 'inline' }}
+											src={closeIcon}
+											alt='Close'
+										/>
+									</button>
+								</div>
 							)}
 						</ul>
 					</div>
@@ -59,5 +58,6 @@ Notifications.propTypes = {
 
 Notifications.defaultProps = {
 	displayDrawer: false,
+	listNotifications: [],
 };
 export default Notifications;

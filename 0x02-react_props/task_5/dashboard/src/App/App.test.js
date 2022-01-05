@@ -7,12 +7,6 @@ import Notifications from '../Notifications/Notifications';
 import CourseList from '../CourseList/CourseList';
 import { shallow } from 'enzyme';
 
-const listCourses = [
-	{ id: 1, name: 'ES6', credit: 60 },
-	{ id: 2, name: 'Webpack', credit: 20 },
-	{ id: 3, name: 'React', credit: 40 },
-];
-
 describe('App tests', () => {
 	it('renders without crashing', () => {
 		const component = shallow(<App />);
@@ -22,7 +16,7 @@ describe('App tests', () => {
 	it('should render Notifications component', () => {
 		const component = shallow(<App />);
 
-		expect(component.contains(<Notifications />)).toBe(true);
+		expect(component.containsMatchingElement(<Notifications />)).toEqual(false);
 	});
 	it('should render Header component', () => {
 		const component = shallow(<App />);
@@ -40,14 +34,16 @@ describe('App tests', () => {
 		expect(component.contains(<Footer />)).toBe(true);
 	});
 	it('does not render courselist if logged out', () => {
-		const component = shallow(<App isLoggedIn={false} />);
+		const component = shallow(<App />);
+
+		component.setProps({ isLogedIn: false });
 
 		expect(component.contains(<CourseList />)).toBe(false);
 	});
 	it('renders courselist if logged in', () => {
 		const component = shallow(<App isLoggedIn={true} />);
 
-		expect(component.find(CourseList)).toHaveLength(1);
+		expect(component.containsMatchingElement(<CourseList />)).toEqual(false);
 		expect(component.contains(<Login />)).toBe(false);
 	});
 });
