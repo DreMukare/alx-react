@@ -3,7 +3,7 @@ import './Login.css';
 
 const Login = () => {
 	return (
-		<React.Fragment>
+		<>
 			<div className='App-body'>
 				<p>Login to access the full dashboard</p>
 				<section className='form-inputs'>
@@ -18,7 +18,7 @@ const Login = () => {
 					<button>OK</button>
 				</section>
 			</div>
-		</React.Fragment>
+		</>
 	);
 };
 
