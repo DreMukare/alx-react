@@ -33,6 +33,7 @@ class App extends React.Component {
 			this.props.logOut();
 		}
 	}
+
 	componentDidMount() {
 		document.addEventListener('keydown', this.handleKeyPress);
 	}
