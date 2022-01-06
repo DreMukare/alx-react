@@ -1,0 +1,11 @@
+.App {
+	height: 100vh;
+	max-width: 100vw;
+}
+
+.heading-section {
+	border-bottom: 4px solid red;
+	display: flex;
+	justify-content: space-between;
+	flex-direction: row-reverse;
+}
