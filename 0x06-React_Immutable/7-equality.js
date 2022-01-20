@@ -1,3 +1,5 @@
-export default areMapsEqual(map1, map2) {
-  return map1.equals(map2)
+import { is } from 'immutable';
+
+export default function areMapsEqual(map1, map2) {
+	return is(map1, map2);
 }
