@@ -1,9 +1,5 @@
-const { fromJs, isKeyed } = require('immutable');
+import { fromJS } from 'immutable';
 
-const getImmutableObject = (object) => {
-	return fromJs(object, (value) =>
-		isKeyed(value) ? value.toOrderedMap() : value.toList()
-	);
-};
+const getImmutableObject = (object) => fromJS(object);
 
-export default getImmutableObject;
+module.exports = getImmutableObject;
