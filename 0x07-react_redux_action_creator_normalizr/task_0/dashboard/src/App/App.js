@@ -52,7 +52,7 @@ class App extends React.Component {
 		document.removeEventListener('keydown', (e) => {
 			if (e.ctrlKey && e.key === 'h') {
 				alert('Logging you out');
-				this.state.logOut();
+				// this.state.logOut();
 			}
 		});
 	}
