@@ -1,39 +1,34 @@
-import Adapter from 'enzyme-adapter-react-16';
-import { shallow, configure, mount, } from 'enzyme';
-import { StyleSheetTestUtils, } from 'aphrodite';
 import {
   MARK_AS_READ,
   SET_TYPE_FILTER,
   NotificationTypeFilters,
-} from './notificationActionTypes.js';
+} from "./notificationActionTypes";
+
 import {
   markAsAread,
   setNotificationFilter,
-} from './notificationActionCreators.js';
+} from "./notificationActionCreators";
 
-configure({ adapter: new Adapter() });
-
-StyleSheetTestUtils.suppressStyleInjection();
-
-describe("Testing the Notification Action Creators.", () => {
-
-  it("Testing the markAsAread action", () => {
-    const expectedResult = {
+describe("action creators tests", function () {
+  it("returns correct action for markAsRead", function () {
+    const expectedReturn = {
       type: MARK_AS_READ,
-      index: 1
+      index: 1,
     };
-    let result = markAsAread(1);
-    expect(result).toMatchObject(expectedResult);
+
+    const result = markAsAread(1);
+
+    expect(result).toEqual(expectedReturn);
   });
 
-  it("Testing the setNotificationFilter action", () => {
-    const expectedResult = {
+  it("returns correct action for setNotificationFilter", function () {
+    const expectedReturn = {
       type: SET_TYPE_FILTER,
-      filter: "DEFAULT"
+      filter: "DEFAULT",
     };
 
-    let result = setNotificationFilter(NotificationTypeFilters['DEFAULT']);
-    expect(result).toMatchObject(expectedResult);
-  });
+    const result = setNotificationFilter(NotificationTypeFilters.DEFAULT);
 
+    expect(result).toEqual(expectedReturn);
+  });
 });

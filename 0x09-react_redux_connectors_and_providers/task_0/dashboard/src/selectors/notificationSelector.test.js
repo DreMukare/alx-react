@@ -1,42 +1,109 @@
-import { expect } from 'chai';
-import Adapter from 'enzyme-adapter-react-16';
-import { configure } from 'enzyme';
-import Immutable, { merge, setIn } from 'immutable';
+import { Map, fromJS } from "immutable";
+
 import {
   filterTypeSelected,
   getNotifications,
   getUnreadNotifications,
-} from './notificationSelector';
-import {
-  fetchNotificationsSuccess,
-} from '../actions/notificationActionCreators';
-import { notificationsNormalizer } from '../schema/notifications';
-import { notificationReducer, initState } from './../reducers/notificationReducer';
+} from "./notificationSelector";
 
-configure({ adapter: new Adapter() });
+import notificationReducer, {
+  initialNotificationState,
+} from "../reducers/notificationReducer";
 
-describe("Testing the notificationSelector", () => {
+import notificationsNormalizer from "../schema/notifications";
 
-  it("test that filterTypeSelected works as expected", () => {
-    let action = fetchNotificationsSuccess();
-    let expected = notificationReducer(undefined, action);
-    let result = filterTypeSelected(expected);
-    expect(expected.toJS().filter).to.equal(result);
+describe("Selectors tests", function () {
+  it("test that filterTypeSelected works as expected", function () {
+    const state = notificationReducer(undefined, {});
+
+    const selected = filterTypeSelected(state);
+
+    expect(selected).toEqual(initialNotificationState.filter);
   });
 
-  it("test that getNotifications returns a list of the message entities within the reducer", () => {
-    let action = fetchNotificationsSuccess();
-    let expected = notificationReducer(undefined, action);
-    let result = getNotifications(expected);
-    Immutable.is(expected.get('notifications'), result);
-  });
+  it("test that getNotifications returns a list of the message entities within the reducer", function () {
+    const initialState = {
+      filter: "DEFAULT",
+      notifications: [
+        {
+          id: 1,
+          isRead: false,
+          type: "default",
+          value: "New course available",
+        },
+        {
+          id: 2,
+          isRead: false,
+          type: "urgent",
+          value: "New resume available",
+        },
+        {
+          id: 3,
+          isRead: false,
+          type: "urgent",
+          value: "New data available",
+        },
+      ],
+    };
 
-  it("test that getUnreadNotifications return a list of the message entities within the reducer", () => {
-    let action = fetchNotificationsSuccess();
-    let expected = notificationReducer(undefined, action);
-    let result = getUnreadNotifications(expected);
-    expected = Object.values(expected.get('notifications')).filter(n => !n.isRead);
-    Immutable.is(expected, result);
-  });
+    initialState.notifications = notificationsNormalizer(
+      initialState.notifications
+    ).notifications;
 
+    const state = notificationReducer(fromJS(initialState), {});
+
+    const selected = getNotifications(state);
+
+    expect(state instanceof Map).toEqual(true);
+    expect(selected.toJS()).toEqual(
+      notificationsNormalizer(initialState.notifications).notifications
+    );
+  });
+  it("test that getUnreadNotifications return a list of the message entities within the reducer", function () {
+    const initialState = {
+      filter: "DEFAULT",
+      notifications: [
+        {
+          id: 1,
+          isRead: false,
+          type: "default",
+          value: "New course available",
+        },
+        {
+          id: 2,
+          isRead: false,
+          type: "urgent",
+          value: "New resume available",
+        },
+        {
+          id: 3,
+          isRead: true,
+          type: "urgent",
+          value: "New data available",
+        },
+      ],
+    };
+
+    const expectedResult = [
+      {
+        id: 3,
+        isRead: true,
+        type: "urgent",
+        value: "New data available",
+      },
+    ];
+
+    initialState.notifications = notificationsNormalizer(
+      initialState.notifications
+    ).notifications;
+
+    const state = notificationReducer(fromJS(initialState), {});
+
+    const selected = getUnreadNotifications(state);
+
+    expect(state instanceof Map).toEqual(true);
+    expect(selected.toJS()).toEqual(
+      notificationsNormalizer(expectedResult).notifications
+    );
+  });
 });

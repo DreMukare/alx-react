@@ -1,54 +1,173 @@
-import { expect } from 'chai';
-import Adapter from 'enzyme-adapter-react-16';
-import { courseReducer, initState, } from './courseReducer';
-import { configure } from 'enzyme';
-import { SELECT_COURSE, UNSELECT_COURSE, FETCH_COURSE_SUCCESS, } from '../actions/courseActionTypes';
+import { Map, fromJS } from "immutable";
+import courseReducer, { initialCourseState } from "./courseReducer";
 import {
-  fetchCourseSuccess,
-  selectCourse,
-  unSelectCourse,
-} from '../actions/courseActionCreators';
-import Immutable, { setIn, } from 'immutable';
-import { coursesNormalizer, } from '../schema/courses'; 
+  FETCH_COURSE_SUCCESS,
+  SELECT_COURSE,
+  UNSELECT_COURSE,
+} from "../actions/courseActionTypes";
 
-configure({ adapter: new Adapter() });
+import coursesNormalizer from "../schema/courses";
 
-describe("Testing the courseReducer", () => {
+describe("courseReducer tests", function () {
+  it("Tests that the default state returns an empty arr", function () {
+    const state = courseReducer(undefined, {});
 
-  // let newState = new Map;
-  let newState = new Immutable.Map(initState);
-
-  it("Test that the default state returns an empty array", () => {
-    let expected = courseReducer(undefined, {});
-    expected = expected.toJS();
-    expect(expected).to.be.an('object');
+    expect(state).toEqual(Map(initialCourseState));
   });
+  it("Tests that FETCH_COURSE_SUCCESS returns the data passed", function () {
+    const action = {
+      type: FETCH_COURSE_SUCCESS,
+      data: [
+        {
+          id: 1,
+          name: "ES6",
+          credit: 60,
+        },
+        {
+          id: 2,
+          name: "Webpack",
+          credit: 20,
+        },
+        {
+          id: 3,
+          name: "React",
+          credit: 40,
+        },
+      ],
+    };
 
-  it("Test that FETCH_COURSE_SUCCESS returns the data passed", () => {
-    let action = fetchCourseSuccess();
-    let expected = courseReducer(undefined, action);
-    let updatedData = [];
-    action.data.map(course => {
-      updatedData.push({...course, isSelected: false});
-    });
-    newState = coursesNormalizer(updatedData);
-    expect(expected.toJS()).to.deep.equal(newState);
+    const expectedData = [
+      {
+        id: 1,
+        name: "ES6",
+        isSelected: false,
+        credit: 60,
+      },
+      {
+        id: 2,
+        name: "Webpack",
+        isSelected: false,
+        credit: 20,
+      },
+      {
+        id: 3,
+        name: "React",
+        isSelected: false,
+        credit: 40,
+      },
+    ];
+
+    const state = courseReducer(undefined, action);
+    expect(state.toJS()).toEqual(coursesNormalizer(expectedData));
   });
+  it("Tests that SELECT_COURSE returns the data with the right item updated", function () {
+    const initialState = [
+      {
+        id: 1,
+        name: "ES6",
+        isSelected: false,
+        credit: 60,
+      },
+      {
+        id: 2,
+        name: "Webpack",
+        isSelected: false,
+        credit: 20,
+      },
+      {
+        id: 3,
+        name: "React",
+        isSelected: false,
+        credit: 40,
+      },
+    ];
 
-  it("Test that SELECT_COURSE returns the data with the right item updated", () => {
-    let action = selectCourse(1);
-    let ns = setIn(newState, ['entities', 'courses', action.index, 'isSelected'], true);
-    let expected = courseReducer(newState, action);
-    Immutable.is(expected, ns);
-    newState = ns;
+    const action = {
+      type: SELECT_COURSE,
+      index: 2,
+    };
+
+    const expectedData = [
+      {
+        id: 1,
+        name: "ES6",
+        isSelected: false,
+        credit: 60,
+      },
+      {
+        id: 2,
+        name: "Webpack",
+        isSelected: true,
+        credit: 20,
+      },
+      {
+        id: 3,
+        name: "React",
+        isSelected: false,
+        credit: 40,
+      },
+    ];
+
+    const state = courseReducer(
+      fromJS(coursesNormalizer(initialState)),
+      action
+    );
+
+    expect(state.toJS()).toEqual(coursesNormalizer(expectedData));
   });
+  it("Tests that UNSELECT_COURSE returns the data with the right item updated", function () {
+    const initialState = [
+      {
+        id: 1,
+        name: "ES6",
+        isSelected: false,
+        credit: 60,
+      },
+      {
+        id: 2,
+        name: "Webpack",
+        isSelected: true,
+        credit: 20,
+      },
+      {
+        id: 3,
+        name: "React",
+        isSelected: false,
+        credit: 40,
+      },
+    ];
 
-  it("Test that UNSELECT_COURSE returns the data with the right item updated", () => {
-    let action = unSelectCourse(1);
-    let ns = setIn(newState, ['entities', 'courses', action.index, 'isSelected'], true);
-    let expected = courseReducer(newState, action);
-    Immutable.is(expected, ns);
-    newState = ns;
+    const action = {
+      type: UNSELECT_COURSE,
+      index: 2,
+    };
+
+    const expectedData = [
+      {
+        id: 1,
+        name: "ES6",
+        isSelected: false,
+        credit: 60,
+      },
+      {
+        id: 2,
+        name: "Webpack",
+        isSelected: false,
+        credit: 20,
+      },
+      {
+        id: 3,
+        name: "React",
+        isSelected: false,
+        credit: 40,
+      },
+    ];
+
+    const state = courseReducer(
+      fromJS(coursesNormalizer(initialState)),
+      action
+    );
+
+    expect(state.toJS()).toEqual(coursesNormalizer(expectedData));
   });
-
 });

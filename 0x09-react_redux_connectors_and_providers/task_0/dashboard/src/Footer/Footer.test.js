@@ -1,71 +1,38 @@
-import React from 'react';
-import { expect } from 'chai';
-import Adapter from 'enzyme-adapter-react-16';
-import { shallow, configure, mount } from 'enzyme';
-import Footer from './Footer';
-import { StyleSheetTestUtils } from 'aphrodite';
-import AppContext from '../App/AppContext';
+import { shallow, mount } from "enzyme";
+import React from "react";
+import Footer from "./Footer";
+import AppContext from "../App/AppContext";
+import { user, logOut } from "../App/AppContext";
 
-configure({adapter: new Adapter()});
+describe("<Footer />", () => {
+  it("Footer renders without crashing", () => {
+    const wrapper = shallow(<Footer />);
+    expect(wrapper.exists()).toEqual(true);
+  });
+  it("Verify that the components at the very least render the text “Copyright”", () => {
+    const wrapper = mount(<Footer />);
+    expect(wrapper.find("div.footer p")).toHaveLength(1);
+    expect(wrapper.find("div.footer p").text()).toContain("Copyright");
+  });
 
-describe("Testing the <Footer /> Component", () => {
-	
-	let wrapper;
+  it("verify that the link is not displayed when the user is logged out within the context", () => {
+    const wrapper = mount(
+      <AppContext.Provider value={{ user, logOut }}>
+        <Footer />
+      </AppContext.Provider>
+    );
+    expect(wrapper.find("div.footer a")).toHaveLength(0);
+  });
 
-	beforeEach(() => {
-		StyleSheetTestUtils.suppressStyleInjection();
-		wrapper = shallow(<Footer shouldRender />);
-	});
-
-	afterEach(() => {
-		StyleSheetTestUtils.clearBufferAndResumeStyleInjection();
-	});
-
-	it("<Footer /> is rendered without crashing", () => {
-		expect(wrapper.render()).to.not.be.an('undefined');
-	});
-
-	it("<Footer /> renders at least the text: Copyright", () => {
-		const wrapper = mount(<Footer />);
-		expect(wrapper.find('p').at(0).html()).to.include('Copyright');
-	});
-
-	it("verify that the link is not displayed when the user is logged out within the context", () => {
-		const contextVal = {
-      user: {
-        email: '',
-        password: '',
-        isLoggedIn: false,
-      },
-      logOut: () => this.logOut(),
-		};
-
-		const wrapper = mount(
-			<AppContext.Provider value={contextVal}>
-				<Footer />
-			</AppContext.Provider>
-		);
-
-		expect(wrapper.find('a')).to.have.lengthOf(0);
-	});
-
-	it("verify that the link is not displayed when the user is logged out within the context", () => {
-		const contextVal = {
-      user: {
-        email: 'cyborg13x@gmail.com',
-        password: 'qe135ba',
-        isLoggedIn: true,
-      },
-      logOut: () => this.logOut(),
-		};
-
-		const wrapper = mount(
-			<AppContext.Provider value={contextVal}>
-				<Footer />
-			</AppContext.Provider>
-		);
-
-		expect(wrapper.find('a')).to.have.lengthOf(1);
-	});
-
+  it("verify that the link is displayed when the user is logged in within the context", () => {
+    const wrapper = mount(
+      <AppContext.Provider
+        value={{ user: { ...user, isLoggedIn: true }, logOut }}
+      >
+        <Footer />
+      </AppContext.Provider>
+    );
+    expect(wrapper.find("div.footer a")).toHaveLength(1);
+    expect(wrapper.find("div.footer a").text()).toEqual("Contact us");
+  });
 });

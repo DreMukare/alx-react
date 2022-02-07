@@ -1,28 +1,23 @@
-import { expect } from 'chai';
-import Adapter from 'enzyme-adapter-react-16';
-import { uiReducer, initState, } from './uiReducer';
-import { configure } from 'enzyme';
-import { SELECT_COURSE } from '../actions/courseActionTypes';
-import { DISPLAY_NOTIFICATION_DRAWER } from '../actions/uiActionTypes';
-import toJS from 'immutable';
+import uiReducer, { initialState } from "./uiReducer";
+import { DISPLAY_NOTIFICATION_DRAWER } from "../actions/uiActionTypes";
 
-configure({ adapter: new Adapter() });
+describe("uiReducer tests", function () {
+  it("verifies the state returned by the uiReducer function equals the initial state when no action is passed", function () {
+    const state = uiReducer(undefined, {});
 
-describe("Testing the uiReducer", () => {
-  
-  it("Verify the returned state equals the initial state when no action is passed", () => {
-    let expected = (uiReducer(undefined, {})).toJS();
-    expect(expected).to.deep.equal(initState);
+    expect(state.toJS()).toEqual(initialState);
   });
+  it("verifies the state returned by the uiReducer function equals the initial state when the action SELECT_COURSE is passed", function () {
+    const state = uiReducer(undefined, { type: "SELECT_COURSE" });
 
-  it("Verify the returned state equals the initial state when the action SELECT_COURSE is passed", () => {
-    let expected = (uiReducer(undefined, { type: SELECT_COURSE })).toJS();
-    expect(expected).to.deep.equal(initState);
+    expect(state.toJS()).toEqual(initialState);
   });
+  it("verifies the state returned by the uiReducer function, when the action DISPLAY_NOTIFICATION_DRAWER is passed, changes correctly the isNotificationDrawerVisible property", function () {
+    const state = uiReducer(undefined, { type: DISPLAY_NOTIFICATION_DRAWER });
 
-  it("Verify the returned state has the correct 'isNotificationDrawerVisible' when the 'DISPLAY_NOTIFICATION_DRAWER' action is passed", () => {
-    let expected = (uiReducer(undefined, { type: DISPLAY_NOTIFICATION_DRAWER })).toJS();
-    expect(expected.isNotificationDrawerVisible).to.equal(true);
+    expect(state.toJS()).toEqual({
+      ...initialState,
+      isNotificationDrawerVisible: true,
+    });
   });
-
 });

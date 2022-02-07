@@ -1,77 +1,103 @@
-import React, { PureComponent, Fragment } from 'react';
-import PropTypes from 'prop-types';
-import { StyleSheet, css } from 'aphrodite';
+import React from "react";
+import PropTypes from "prop-types";
+import { StyleSheet, css } from "aphrodite";
 
-class NotificationItem extends PureComponent {
-	render() {
-		let {
-			id,
-			type,
-			value,
-			html,
-			markAsRead
-		} = this.props;
+const NotificationItem = React.memo(function NotificationItem({
+  type,
+  value,
+  html,
+  markAsRead,
+  id,
+}) {
+  let listItem;
 
-		let liStyle = (type === 'urgent') ? styles.urgentNotif : styles.defaultNotif;
+  let typeStyle = css(type === "urgent" ? styles.urgent : styles.default);
 
-		return (
-			<Fragment>
-				{
-					html !== undefined &&
-					<li
-						className={css(liStyle)}
-						onClick={() => markAsRead(id)}
-						data-priority-type={type}
-						dangerouslySetInnerHTML={html}
-					/>
-				}
-				{
-					html === undefined &&
-					<li
-						className={css(liStyle)}
-						onClick={() => markAsRead(id)}
-						data-priority-type={type}
-					>
-						{value}
-					</li>
-				}
-			</Fragment>
-		);
-	};
+  if (value) {
+    if (type === "noNotifications") {
+      listItem = (
+        <li
+          className={css(styles.noNotifications)}
+          data-notification-type={type}
+        >
+          {value}
+        </li>
+      );
+    } else {
+      listItem = (
+        <li
+          className={typeStyle}
+          data-notification-type={type}
+          onClick={() => markAsRead(id)}
+        >
+          {value}
+        </li>
+      );
+    }
+  } else {
+    listItem = (
+      <li
+        className={typeStyle}
+        data-notification-type={type}
+        dangerouslySetInnerHTML={html}
+        onClick={() => markAsRead(id)}
+      ></li>
+    );
+  }
+
+  return listItem;
+});
+
+NotificationItem.defaultProps = {
+  type: "default",
+  value: "",
+  html: {},
+  markAsRead: () => {},
+  id: NaN,
+};
+
+NotificationItem.propTypes = {
+  type: PropTypes.string,
+  value: PropTypes.string,
+  html: PropTypes.shape({
+    __html: PropTypes.string,
+  }),
+  markAsRead: PropTypes.func,
+  id: PropTypes.number,
+};
+
+const screenSize = {
+  small: "@media screen and (max-width: 900px)",
+};
+
+const listItemSmall = {
+  listStyle: "none",
+  borderBottom: "1px solid black",
+  padding: "10px 8px",
+  fontSize: "20px",
 };
 
 const styles = StyleSheet.create({
-	defaultNotif: {
-		color: 'blue',
-		padding: '10px 8px',
-		'@media (max-width: 900px)': {
-			width: '100%',
-			fontSize: '20px',
-			borderBottom: '1px solid black',
-		},
-	},
-	urgentNotif: {
-		color: 'red',
-		padding: '10px 8px',
-		'@media (max-width: 900px)': {
-			width: '100%',
-			fontSize: '20px',
-			borderBottom: '1px solid black',
-		},
-	},
+  default: {
+    color: "blue",
+    ":hover": {
+      cursor: "pointer",
+    },
+    [screenSize.small]: listItemSmall,
+  },
+
+  urgent: {
+    color: "red",
+    ":hover": {
+      cursor: "pointer",
+    },
+    [screenSize.small]: listItemSmall,
+  },
+
+  noNotifications: {
+    color: "black",
+    [screenSize.small]: listItemSmall,
+  },
 });
-
-NotificationItem.propTypes = {
-	html: PropTypes.shape({
-		__html: PropTypes.string,
-	}),
-	type: PropTypes.string.isRequired,
-	value: PropTypes.string,
-	markAsRead: PropTypes.func,
-};
-
-NotificationItem.defaultProps = {
-	type: "default",
-};
 
 export default NotificationItem;
